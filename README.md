@@ -31,3 +31,10 @@ git clone https://github.com/dein-nutzername/DM_Notes.git
 - Sicherstellen, dass .NET Framework 4.8 installiert ist
 
 3. Build & Run
+
+
+## Screenshots
+
+| Notizübersicht | Notizdetails |
+|----------------|--------------|
+| ![Main](screenshots/main.png) | ![Details](screenshots/details.png) |
