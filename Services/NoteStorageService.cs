@@ -16,13 +16,11 @@ namespace DM_Notes.Services
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "DM_Notes");
 
+        
         // Pfad und Name der Speicherdatei
         private static readonly string StorageFile = Path.Combine(StorageFolder, "notes.json");
-
-        // Path and name for error logging
-        private static readonly string LogFile = Path.Combine(StorageFolder, "error.log");
-
-
+        
+        
         /// <summary>
         /// Lädt die notes.json-Datei, erstellt sie, falls nicht vorhanden.
         /// </summary>
@@ -46,7 +44,7 @@ namespace DM_Notes.Services
             }
             catch (Exception ex)
             {
-                await LogErrorAsync("LoadAsync", ex);
+                await ErrorLogger.LogAsync("LoadAsync", ex);
                 return new List<Note>();
             }
         }
@@ -72,25 +70,7 @@ namespace DM_Notes.Services
             }
             catch (Exception ex)
             {
-                await LogErrorAsync("SaveAsync", ex);
-            }
-        }
-
-        /// <summary>
-        /// Error-Logging
-        /// </summary>
-        /// <param name="context">In welcher Methode ist der Fehler aufgetreten</param>
-        /// <param name="ex">Error-Text</param>
-        private static async Task LogErrorAsync(string context, Exception ex)
-        {
-            try
-            {
-                var mesage = $"[{DateTime.Now:G}] {context}: {ex}\n";
-                await Task.Run(() => File.AppendAllText(LogFile, mesage));
-            }
-            catch (Exception logEx)
-            {
-                Console.Error.WriteLine($"[LogErrorAsync] Logging failed: {logEx.Message}");
+                await ErrorLogger.LogAsync("SaveAsync", ex);
             }
         }
     }
