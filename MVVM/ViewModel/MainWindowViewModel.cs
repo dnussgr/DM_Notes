@@ -49,7 +49,7 @@ namespace DM_Notes.MVVM.ViewModel
 
         public ISnackbarMessageQueue SnackbarMessageQueue { get; set; }
 
-        public MainWindowViewModel(INoteService noteService)
+        public MainWindowViewModel(INoteService noteService, ISnackbarMessageQueue? snackbarQueue = null)
         {
             _noteService = noteService;
             
@@ -60,7 +60,7 @@ namespace DM_Notes.MVVM.ViewModel
             NewNoteCommand = new RelayCommand(NewNote);
             OpenNoteCommand = new RelayCommand(OpenNote);
 
-            SnackbarMessageQueue = new SnackbarMessageQueue(TimeSpan.FromSeconds(3));
+            SnackbarMessageQueue = snackbarQueue ?? new SnackbarMessageQueue(TimeSpan.FromSeconds(3));
 
             _ = LoadNotesAsync();
         }
