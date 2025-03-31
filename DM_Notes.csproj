@@ -99,6 +99,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Services\ErrorLogger.cs" />
+    <Compile Include="Services\INoteService.cs" />
+    <Compile Include="Services\NoteServiceAdapter.cs" />
     <Compile Include="Services\NoteStorageService.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

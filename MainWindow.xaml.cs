@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using DM_Notes.MVVM.ViewModel;
 using DM_Notes.Core;
+using DM_Notes.Services;
 
 namespace DM_Notes
 {
@@ -12,7 +13,8 @@ namespace DM_Notes
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainWindowViewModel(new NoteCollection());
+            var viewModel = new MainWindowViewModel(new NoteServiceAdapter());
+            DataContext = viewModel;
         }
     }
 }

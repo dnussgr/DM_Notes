@@ -5,7 +5,6 @@ using DM_Notes.Services;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -14,6 +13,8 @@ namespace DM_Notes.MVVM.ViewModel
 {
     public class MainWindowViewModel : ObservableObject
     {
+        private readonly INoteService _noteService;
+        
         private string _title;
         public string Title
         {
@@ -48,9 +49,11 @@ namespace DM_Notes.MVVM.ViewModel
 
         public ISnackbarMessageQueue SnackbarMessageQueue { get; set; }
 
-        public MainWindowViewModel(NoteCollection noteCollection)
+        public MainWindowViewModel(INoteService noteService)
         {
-            _notes = new ObservableCollection<Note>();
+            _noteService = noteService;
+            
+            Notes = new ObservableCollection<Note>();
             SelectedNote = new Note();
             AddNoteCommand = new RelayCommand(async () => await AddNote());
             RemoveNoteCommand = new RelayCommand(async () => await RemoveNote());
@@ -73,7 +76,6 @@ namespace DM_Notes.MVVM.ViewModel
 
             Note newNote = new Note
             {
-                Id = Notes.Count + 1,
                 Title = Title,
                 UserNote = UserNote,
                 Date = DateTime.Now
@@ -82,14 +84,15 @@ namespace DM_Notes.MVVM.ViewModel
             try
             {
                 Notes.Add(newNote);
-                await NoteStorageService.SaveAsync(Notes);
+                await _noteService.SaveNoteAsync(newNote);
                 SnackbarMessageQueue.Enqueue("Notiz erfolgreich hinzugefügt!");
 
                 SelectedNote = newNote;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 SnackbarMessageQueue.Enqueue("Fehler beim Speichern der Notiz!");
+                await ErrorLogger.LogAsync("AddNote", ex);
             }
 
         }
@@ -102,15 +105,18 @@ namespace DM_Notes.MVVM.ViewModel
             {
                 try
                 {
-                    Notes.Remove(SelectedNote);
+                    var noteToRemove = SelectedNote;
+                    Notes.Remove(noteToRemove);
                     SelectedNote = Notes.Count > 0 ? Notes[0] : new Note();
-                    await NoteStorageService.SaveAsync(Notes);
+                    
+                    await _noteService.DeleteNoteAsync(noteToRemove);
+                    
                     SnackbarMessageQueue.Enqueue("Notiz gelöscht");
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
                     SnackbarMessageQueue.Enqueue("Fehler beim Löschen der Notiz");
-                    await ErrorLogger.LogAsync("RemoveNote", e);
+                    await ErrorLogger.LogAsync("RemoveNote", ex);
                 }
             }
         }
@@ -145,8 +151,8 @@ namespace DM_Notes.MVVM.ViewModel
 
         private async Task LoadNotesAsync()
         {
-            var loadedNotes = await NoteStorageService.LoadAsync();
-            Notes = new ObservableCollection<Note>(loadedNotes);
+            var loadedNotes = await _noteService.LoadNotesAsync();
+            Notes = loadedNotes;
             SnackbarMessageQueue.Enqueue("Notizen erfolgreich geladen");
         }
 
@@ -157,16 +163,18 @@ namespace DM_Notes.MVVM.ViewModel
                 var original = Notes.FirstOrDefault(n => n.Id == editedNote.Id);
                 if (original == null ||
                     (original.Title == editedNote.Title && original.UserNote == editedNote.UserNote)) return;
+                
                 original.Title = editedNote.Title;
                 original.UserNote = editedNote.UserNote;
                 original.Date = DateTime.Now;
 
-                await NoteStorageService.SaveAsync(Notes);
+                await _noteService.SaveNoteAsync(editedNote);
                 SnackbarMessageQueue.Enqueue("Notiz aktualisiert.");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 SnackbarMessageQueue.Enqueue("Fehler beim aktualisieren der Notiz!");
+                await ErrorLogger.LogAsync("SaveEditedNote", ex);
             }
         }
     }
