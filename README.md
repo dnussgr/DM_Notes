@@ -19,9 +19,9 @@ A simple yet structured WPF application for creating and managing notes. Follows
 DM_Notes/
 │
 ├── MVVM/
-│   ├── Model/              # Note model definition
-│   ├── View/               # XAML views
-│   └── ViewModel/          # ViewModel binding logic
+│   ├── Model/             # Note model definition
+│   ├── View/              # XAML views
+│   └── ViewModel/         # ViewModel binding logic
 │
 ├── Core/                  # Base classes like RelayCommand, NoteCollection
 ├── Services/              # Storage and adapter services
