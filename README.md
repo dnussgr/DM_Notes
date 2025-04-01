@@ -1,4 +1,4 @@
-# DM Notes 🗒️
+# DM Notes
 
 A simple yet structured WPF application for creating and managing notes. Follows the MVVM (Model-View-ViewModel) architectural pattern, ensuring separation of concerns, testability, and scalability.
 
@@ -80,6 +80,6 @@ dotnet run --project DM_Notes
 
 ---
 
-## 📷 Screenshots
+## Screenshots
 ![Main](screenshots/main.png)
 ![Details](screenshots/details.png)
