@@ -173,7 +173,7 @@ namespace DM_Notes.MVVM.ViewModel
             }
             catch (Exception ex)
             {
-                SnackbarMessageQueue.Enqueue("Fehler beim aktualisieren der Notiz!");
+                SnackbarMessageQueue.Enqueue("Fehler beim Aktualisieren der Notiz!");
                 await ErrorLogger.LogAsync("SaveEditedNote", ex);
             }
         }

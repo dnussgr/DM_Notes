@@ -19,7 +19,19 @@ public class NoteServiceAdapter : INoteService
     public async Task SaveNoteAsync(Note note)
     {
         var notes = await NoteStorageService.LoadAsync();
-        notes.Add(note);
+        var existing = notes.FirstOrDefault(n => n.Id == note.Id);
+
+        if (existing != null)
+        {
+            existing.Title = note.Title;
+            existing.UserNote = note.UserNote;
+            existing.Date = note.Date;
+        }
+        else
+        {
+            notes.Add(note);
+        }
+
         await NoteStorageService.SaveAsync(notes);
     }
 
