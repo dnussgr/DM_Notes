@@ -74,7 +74,7 @@ dotnet run --project DM_Notes
 ## Future Improvements
 - Dependency Injection for Services
 - SQLite integration instead of JSON
-- Dark mode toggle
+- Dark/Light Mode
 - Cloud synchronization (e.g., Google Drive API)
 - More comprehensive test coverage
 
